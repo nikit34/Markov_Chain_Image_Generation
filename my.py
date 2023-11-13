@@ -10,7 +10,7 @@ from collections import defaultdict, Counter
 
 
 class MarkChain:
-    def __init__(self, bucket_size = 10, four_nb = True):
+    def __init__(self, bucket_size=10, four_nb=True):
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
@@ -37,7 +37,7 @@ class MarkChain:
             ]
 
     def get_neighbours_dir(self, x, y):
-        if self.four_neighbour:
+        if self.four_nb:
             return {'r': (x + 1, y), 'l': (x - 1, y), 'b': (x, y + 1), 't': (x, y - 1)}
         else:
             return dict(zip(
@@ -57,11 +57,11 @@ class MarkChain:
     def train(self, img):
         width, height = img.size
         img = np.array(img)[:, :, :3]
-        prog = pyprind.ProgBar((width * height), width = 64, stream = 1)
+        prog = pyprind.ProgBar((width * height), width=64, stream=1)
 
         for x in range(height):
             for y in range(height):
-                pix = tuple(self.norm(ing[x, y]))
+                pix = tuple(self.norm(img[x, y]))
                 prog.update()
                 for neighb in self.get_neighbs(x, y):
                     try:
@@ -71,7 +71,7 @@ class MarkChain:
         self.directional = False
 
 
-    def gen(self, init_state = None, width = 512, height = 512):
+    def gen(self, init_state=None, width=512, height=512):
         fourcc = cv2.VideoWriter_fourcc(*'MP4v')
         writer = cv2.VideoWriter('markov_img.mp4', fourcc, 24, (width, height))
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)
@@ -126,7 +126,7 @@ class MarkChain:
             else:
                 keys = list(node.keys())
                 heighbours = self.get_neighbours(x, y)
-                counts = np.array(list(node.values()), dtype = np.float32)
+                counts = np.array(list(node.values()), dtype=np.float32)
                 key_idxs = np.arange(len(keys))
                 ps = counts / counts.sum()
             np.randem.shuffle(neighbours)
@@ -136,10 +136,10 @@ class MarkChain:
                         direction = neighbour[0]
                         neighbour = neighbour[1]
                         if neighbour not in coloured:
-                            col_idx = np.random.choice(key_idxs[direction], p = ps[direction])
+                            col_idx = np.random.choice(key_idxs[direction], p=ps[direction])
                             img[neighbour] = keys[direction][col_idx]
                         else:
-                            col_idx = np.random.choice(key_idxs, p = ps)
+                            col_idx = np.random.choice(key_idxs, p=ps)
                             if neighbour not in coloured:
                                 img[neighbour] = keys[col_idx]
                 except IndexError:
@@ -153,7 +153,7 @@ class MarkChain:
 
 
 if __name__  == "__main__":
-    chain = MarkChain(bucket_size = 16, four_nb = True)
+    chain = MarkChain(bucket_size=16, four_nb=True)
     try:
         fnames = sys.argv[1:]
     except IndexError:
