@@ -15,13 +15,13 @@ class MarkChain:
         self.bucket_size = bucket_size
         self.four_nb = four_nb
 
-    def norm(self, pixel):
+    def normalize(self, pixel):
         return pixel
 
     def denomalize(self, pixel):
         return pixel * self.bucket_size
 
-    def get_neighbs(self, x, y):
+    def get_neighbours(self, x, y):
         if self.four_nb:
             return [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         else:
@@ -60,12 +60,12 @@ class MarkChain:
         prog = pyprind.ProgBar((width * height), width=64, stream=1)
 
         for x in range(height):
-            for y in range(height):
-                pix = tuple(self.norm(img[x, y]))
+            for y in range(width):
+                pix = tuple(self.normalize(img[x, y]))
                 prog.update()
-                for neighb in self.get_neighbs(x, y):
+                for neighbor in self.get_neighbours(x, y):
                     try:
-                        self.weights[pix][tuple(self.norm(img[neighb]))] += 1
+                        self.weights[pix][tuple(self.normalize(img[neighbor]))] += 1
                     except IndexError:
                         continue
         self.directional = False
