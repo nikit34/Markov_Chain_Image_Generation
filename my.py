@@ -71,7 +71,7 @@ class MarkChain:
         self.directional = False
 
 
-    def gen(self, init_state=None, width=512, height=512):
+    def generate(self, init_state=None, width=512, height=512):
         fourcc = cv2.VideoWriter_fourcc(*'MP4v')
         writer = cv2.VideoWriter('markov_img.mp4', fourcc, 24, (width, height))
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)
@@ -165,4 +165,4 @@ if __name__  == "__main__":
         chain.train(im)
     print(chain.weights)
     print("\nGenerating")
-    chain.gen().show()
+    chain.generate().show()
