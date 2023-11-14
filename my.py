@@ -129,7 +129,7 @@ class MarkChain:
             if self.directional:
                 keys = {dir: list(node[dir].keys()) for dir in node}
                 neighbours = self.get_neighbours_dir(x, y).items()
-                counts = {dir:np.arange(len(node[dir])) for dir in keys}
+                counts = {dir: np.arange(len(node[dir])) for dir in keys}
                 ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
             else:
                 keys = list(node.keys())
