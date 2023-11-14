@@ -125,6 +125,7 @@ class MarkChain:
                 if e.type == pygame.QUIT:
                     sys.exit()
 
+            neighbours = []
             if self.directional:
                 keys = {dir: list(node[dir].keys()) for dir in node}
                 neighbours = self.get_neighbours_dir(x, y).items()
