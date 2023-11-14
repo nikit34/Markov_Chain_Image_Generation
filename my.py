@@ -146,23 +146,23 @@ class MarkChain:
                 # берем [имя соседа]: [(нормализованный сосед)]
                 normalized_neighbour = {dir: list(node[dir].keys()) for dir in node}
                 # берем [имя соседа]: [веса]
-                counts = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in normalized_neighbour}
+                weights_neighbour = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in normalized_neighbour}
                 # берем [имя соседа]: [0, 1, 2, ..., len([(нормализованный сосед)])]
                 key_idxs = {dir: np.arange(len(node[dir])) for dir in normalized_neighbour}
                 np.seterr(divide='ignore', invalid='ignore')
                 # делим вес на сумму весов
-                ps = {dir: counts[dir] / counts[dir].sum() for dir in normalized_neighbour}
+                ps = {dir: weights_neighbour[dir] / weights_neighbour[dir].sum() for dir in normalized_neighbour}
 
                 neighbours = list(self.get_neighbours_dir(x, y).items())
             else:
                 # берем [(нормализованный сосед)]
                 normalized_neighbour = list(node.keys())
                 # берем [веса]
-                counts = np.array(list(node.values()), dtype=np.float32)
+                weights_neighbour = np.array(list(node.values()), dtype=np.float32)
                 # берем [0, 1, 2, ..., len([(нормализованный сосед)])]
                 key_idxs = np.arange(len(normalized_neighbour))
                 # делим вес на сумму весов
-                ps = counts / counts.sum()
+                ps = weights_neighbour / weights_neighbour.sum()
 
                 neighbours = self.get_neighbours(x, y)
             # перемешиваем соседей
