@@ -154,10 +154,7 @@ class MarkChain:
 
 if __name__  == "__main__":
     chain = MarkChain(bucket_size=16, four_nb=True)
-    try:
-        fnames = sys.argv[1:]
-    except IndexError:
-        fnames = ['АВА.jpg']
+    fnames = ['АВА.jpg']
     for fname in fnames:
         im = Image.open(fname)
         im.show()
