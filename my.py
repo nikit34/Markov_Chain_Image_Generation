@@ -17,10 +17,11 @@ class MarkChain:
         self.directional = False
 
     def normalize(self, pixel):
-        # делим писель (r, g, b) на "размер корзины"
+        # нормализуем писель (r, g, b), (делим без остатка)
         return pixel // self.bucket_size
 
     def denormalize(self, pixel):
+        # возвращаем нормализованный пиксель в близкое к начальному, дискретное, значение
         return pixel * self.bucket_size
 
     def get_neighbours(self, x, y):
@@ -103,18 +104,23 @@ class MarkChain:
 
         init_pos = (np.random.randint(0, width), np.random.randint(0, height))
         img[init_pos] = init_state
+        # заводим стек с первым рандомным элементом (x, y)
         stack = [init_pos]
         coloured = set()
         i = 0
         prog = pyprind.ProgBar((width * height), width=64, stream=1)
         while stack:
+            # удаляем очередной элемент из стека и получаем его значение
             x, y = stack.pop()
             if (x, y) in coloured:
                 continue
             else:
+                # добавляем значение, которого уже нет в стеке в сет, содержащий пройденные пиксели в формате (x, y)
                 coloured.add((x, y))
             try:
+                # берем значения текущего пикселя из изображения
                 cpixel = img[x, y]
+                # берем значение веса у текущего пикселя
                 node = self.weights[tuple(cpixel)]
                 img_out[x, y] = self.denormalize(cpixel)
                 prog.update()
