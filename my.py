@@ -160,6 +160,5 @@ if __name__  == "__main__":
         im.show()
         print("Training " + fname)
         chain.train(im)
-    print(chain.weights)
     print("\nGenerating")
     chain.generate().show()
