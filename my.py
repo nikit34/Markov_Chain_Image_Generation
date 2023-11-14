@@ -144,23 +144,23 @@ class MarkChain:
             neighbours = []
             if self.directional:
                 # берем [имя соседа]: [(нормализованный сосед)]
-                keys = {dir: list(node[dir].keys()) for dir in node}
+                normalized_neighbour = {dir: list(node[dir].keys()) for dir in node}
                 # берем [имя соседа]: [веса]
-                counts = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in keys}
+                counts = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in normalized_neighbour}
                 # берем [имя соседа]: [0, 1, 2, ..., len([(нормализованный сосед)])]
-                key_idxs = {dir: np.arange(len(node[dir])) for dir in keys}
+                key_idxs = {dir: np.arange(len(node[dir])) for dir in normalized_neighbour}
                 np.seterr(divide='ignore', invalid='ignore')
                 # делим вес на сумму весов
-                ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
+                ps = {dir: counts[dir] / counts[dir].sum() for dir in normalized_neighbour}
 
                 neighbours = list(self.get_neighbours_dir(x, y).items())
             else:
                 # берем [(нормализованный сосед)]
-                keys = list(node.keys())
+                normalized_neighbour = list(node.keys())
                 # берем [веса]
                 counts = np.array(list(node.values()), dtype=np.float32)
                 # берем [0, 1, 2, ..., len([(нормализованный сосед)])]
-                key_idxs = np.arange(len(keys))
+                key_idxs = np.arange(len(normalized_neighbour))
                 # делим вес на сумму весов
                 ps = counts / counts.sum()
 
@@ -174,11 +174,11 @@ class MarkChain:
                         neighbour = neighbour[1]
                         if neighbour not in coloured:
                             col_idx = np.random.choice(key_idxs[direction], p=ps[direction])
-                            img[neighbour] = keys[direction][col_idx]
+                            img[neighbour] = normalized_neighbour[direction][col_idx]
                     else:
                         col_idx = np.random.choice(key_idxs, p=ps)
                         if neighbour not in coloured:
-                            img[neighbour] = keys[col_idx]
+                            img[neighbour] = normalized_neighbour[col_idx]
                 except IndexError:
                     pass
                 except ValueError:
