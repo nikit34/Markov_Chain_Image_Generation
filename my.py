@@ -148,10 +148,10 @@ class MarkChain:
                 # берем [имя соседа]: [веса]
                 weights_neighbour = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in normalized_neighbour}
                 # берем [имя соседа]: [0, 1, 2, ..., len([(нормализованный сосед): вес])]
-                key_idxs = {dir: np.arange(len(node[dir])) for dir in normalized_neighbour}
+                sequence_count_neighbors = {dir: np.arange(len(node[dir])) for dir in normalized_neighbour}
                 np.seterr(divide='ignore', invalid='ignore')
                 # делим вес на сумму весов
-                ps = {dir: weights_neighbour[dir] / weights_neighbour[dir].sum() for dir in normalized_neighbour}
+                relative_weight = {dir: weights_neighbour[dir] / weights_neighbour[dir].sum() for dir in normalized_neighbour}
 
                 neighbours = list(self.get_neighbours_dir(x, y).items())
             else:
@@ -160,9 +160,9 @@ class MarkChain:
                 # берем [веса]
                 weights_neighbour = np.array(list(node.values()), dtype=np.float32)
                 # берем [0, 1, 2, ..., len([(нормализованный сосед): вес])]
-                key_idxs = np.arange(len(normalized_neighbour))
+                sequence_count_neighbors = np.arange(len(normalized_neighbour))
                 # делим вес на сумму весов
-                ps = weights_neighbour / weights_neighbour.sum()
+                relative_weight = weights_neighbour / weights_neighbour.sum()
 
                 neighbours = self.get_neighbours(x, y)
 
@@ -174,10 +174,10 @@ class MarkChain:
                         direction = neighbour[0]
                         neighbour = neighbour[1]
                         if neighbour not in coloured:
-                            col_idx = np.random.choice(key_idxs[direction], p=ps[direction])
+                            col_idx = np.random.choice(sequence_count_neighbors[direction], p=relative_weight[direction])
                             img[neighbour] = normalized_neighbour[direction][col_idx]
                     else:
-                        col_idx = np.random.choice(key_idxs, p=ps)
+                        col_idx = np.random.choice(sequence_count_neighbors, p=relative_weight)
                         if neighbour not in coloured:
                             img[neighbour] = normalized_neighbour[col_idx]
                 except IndexError:
