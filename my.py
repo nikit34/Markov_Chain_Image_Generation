@@ -85,6 +85,11 @@ class MarkChain:
                         except IndexError:
                             continue
 
+    def check_status_events(self):
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                sys.exit()
+
     def generate(self, init_state=None, width=512, height=512):
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         writer = cv2.VideoWriter('markov_img.mp4', fourcc, 24, (width, height))
@@ -110,6 +115,8 @@ class MarkChain:
         i = 0
         prog = pyprind.ProgBar((width * height), width=64, stream=1)
         while stack:
+            self.check_status_events()
+
             # удаляем очередной элемент из стека и получаем его значение
             x, y = stack.pop()
             if (x, y) in coloured:
@@ -133,10 +140,6 @@ class MarkChain:
                     pass
             except IndexError:
                 continue
-
-            for e in pygame.event.get():
-                if e.type == pygame.QUIT:
-                    sys.exit()
 
             neighbours = []
             if self.directional:
