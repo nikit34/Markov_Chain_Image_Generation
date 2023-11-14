@@ -14,6 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
+        self.directional = False
 
     def normalize(self, pixel):
         return pixel // self.bucket_size
@@ -63,13 +64,19 @@ class MarkChain:
             for y in range(width):
                 pix = tuple(self.normalize(img[x, y]))
                 prog.update()
-                for neighbor in self.get_neighbours(x, y):
-                    try:
-                        self.weights[pix][tuple(self.normalize(img[neighbor]))] += 1
-                    except IndexError:
-                        continue
-        self.directional = False
-
+                if self.directional:
+                    self.weights = defaultdict(lambda: defaultdict(Counter))
+                    for dir, neighbour in self.get_neighbours_dir(x, y).items():
+                        try:
+                            self.weights[pix][dir][tuple(self.normalize(img[neighbour]))] += 1
+                        except IndexError:
+                            continue
+                else:
+                    for neighbor in self.get_neighbours(x, y):
+                        try:
+                            self.weights[pix][tuple(self.normalize(img[neighbor]))] += 1
+                        except IndexError:
+                            continue
 
     def generate(self, init_state=None, width=512, height=512):
         fourcc = cv2.VideoWriter_fourcc(*'MP4v')
@@ -129,7 +136,7 @@ class MarkChain:
                 counts = np.array(list(node.values()), dtype=np.float32)
                 key_idxs = np.arange(len(keys))
                 ps = counts / counts.sum()
-            np.randem.shuffle(neighbours)
+            np.random.shuffle(neightbours)
             for neightbour in neightbours:
                 try:
                     if self.directional:
