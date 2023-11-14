@@ -171,15 +171,19 @@ class MarkChain:
             for neighbour in neighbours:
                 try:
                     if self.directional:
+                        # берем имя соседа
                         direction = neighbour[0]
+                        # берем самого соседа
                         neighbour = neighbour[1]
                         if neighbour not in coloured:
-                            col_idx = np.random.choice(sequence_count_neighbors[direction], p=relative_weight[direction])
-                            img[neighbour] = normalized_neighbour[direction][col_idx]
+                            current_weight = np.random.choice(sequence_count_neighbors[direction], p=relative_weight[direction])
+                            img[neighbour] = normalized_neighbour[direction][current_weight]
                     else:
-                        col_idx = np.random.choice(sequence_count_neighbors, p=relative_weight)
                         if neighbour not in coloured:
-                            img[neighbour] = normalized_neighbour[col_idx]
+                            # выбираем случайный вес с вероятностью посчитанной как относительный вес для каждого соседнего пикселя
+                            current_weight = np.random.choice(sequence_count_neighbors, p=relative_weight)
+                            # назначаем соседа с выбранным весом текущему соседу
+                            img[neighbour] = normalized_neighbour[current_weight]
                 except IndexError:
                     pass
                 except ValueError:
