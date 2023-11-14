@@ -14,7 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = False
+        self.directional = True
 
     def normalize(self, pixel):
         return pixel // self.bucket_size
@@ -79,7 +79,7 @@ class MarkChain:
                             continue
 
     def generate(self, init_state=None, width=512, height=512):
-        fourcc = cv2.VideoWriter_fourcc(*'MP4v')
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         writer = cv2.VideoWriter('markov_img.mp4', fourcc, 24, (width, height))
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)
         pygame.init()
@@ -129,9 +129,10 @@ class MarkChain:
             neighbours = []
             if self.directional:
                 keys = {dir: list(node[dir].keys()) for dir in node}
-                neighbours = self.get_neighbours_dir(x, y).items()
+                neighbours = list(self.get_neighbours_dir(x, y).items())
                 counts = {dir: np.arange(len(node[dir])) for dir in keys}
                 key_idxs = {dir: np.arange(len(node[dir])) for dir in keys}
+                np.seterr(divide='ignore', invalid='ignore')
                 ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
             else:
                 keys = list(node.keys())
