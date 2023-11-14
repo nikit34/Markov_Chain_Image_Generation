@@ -14,7 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = True
+        self.directional = False
 
     def normalize(self, pixel):
         # делим писель (r, g, b) на "размер корзины"
@@ -170,11 +170,10 @@ class MarkChain:
 
 if __name__  == "__main__":
     chain = MarkChain(bucket_size=16, four_nb=True)
-    fnames = ['АВА.jpg']
-    for fname in fnames:
-        im = Image.open(fname)
-        im.show()
-        print("Training " + fname)
-        chain.train(im)
+    fname = 'АВА.jpg'
+    im = Image.open(fname)
+    im.show()
+    print("Training " + fname)
+    chain.train(im)
     print("\nGenerating")
     chain.generate().show()
