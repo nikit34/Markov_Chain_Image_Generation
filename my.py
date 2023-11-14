@@ -14,9 +14,10 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = False
+        self.directional = True
 
     def normalize(self, pixel):
+        # делим писель (r, g, b) на "размер корзины"
         return pixel // self.bucket_size
 
     def denormalize(self, pixel):
@@ -60,20 +61,25 @@ class MarkChain:
         img = np.array(img)
         prog = pyprind.ProgBar((width * height), width=64, stream=1)
 
+        if self.directional:
+            self.weights = defaultdict(lambda: defaultdict(Counter))
+
         for x in range(height):
             for y in range(width):
                 pix = tuple(self.normalize(img[x, y]))
                 prog.update()
                 if self.directional:
-                    self.weights = defaultdict(lambda: defaultdict(Counter))
                     for dir, neighbour in self.get_neighbours_dir(x, y).items():
                         try:
+                            # записываем веса в формате [(нормализованный пиксель)][имя соседа][(нормализованный сосед)] = счетчик
                             self.weights[pix][dir][tuple(self.normalize(img[neighbour]))] += 1
                         except IndexError:
                             continue
                 else:
+                    # берем все соседние клетки в формате [(x, y), ...]
                     for neighbor in self.get_neighbours(x, y):
                         try:
+                            # записываем веса в формате [(нормализованный пиксель)][(нормализованный сосед)] = счетчик
                             self.weights[pix][tuple(self.normalize(img[neighbor]))] += 1
                         except IndexError:
                             continue
@@ -81,7 +87,6 @@ class MarkChain:
     def generate(self, init_state=None, width=512, height=512):
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         writer = cv2.VideoWriter('markov_img.mp4', fourcc, 24, (width, height))
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 0)
         pygame.init()
 
         screen = pygame.display.set_mode((width, height))
