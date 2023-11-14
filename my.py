@@ -127,7 +127,7 @@ class MarkChain:
 
             if self.directional:
                 keys = {dir: list(node[dir].keys()) for dir in node}
-                neightbours = self.get_neightbours_dir(x, y).items()
+                neighbours = self.get_neighbours_dir(x, y).items()
                 counts = {dir:np.arange(len(node[dir])) for dir in keys}
                 ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
             else:
@@ -136,8 +136,8 @@ class MarkChain:
                 counts = np.array(list(node.values()), dtype=np.float32)
                 key_idxs = np.arange(len(keys))
                 ps = counts / counts.sum()
-            np.random.shuffle(neightbours)
-            for neightbour in neightbours:
+            np.random.shuffle(neighbours)
+            for neightbour in neighbours:
                 try:
                     if self.directional:
                         direction = neighbour[0]
