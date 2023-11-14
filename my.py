@@ -14,7 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = False
+        self.directional = True
 
     def normalize(self, pixel):
         # нормализуем писель (r, g, b), (делим без остатка)
@@ -125,6 +125,7 @@ class MarkChain:
                 img_out[x, y] = self.denormalize(cpixel)
                 prog.update()
                 i += 1
+                # устанавливаем цвет текущему пикселю
                 screen.set_at((x, y), img_out[x, y])
                 if i % 128 == 0:
                     pygame.display.flip()
