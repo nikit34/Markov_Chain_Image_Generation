@@ -127,7 +127,7 @@ class MarkChain:
             try:
                 # берем значения текущего пикселя из изображения
                 cpixel = img[x, y]
-                # берем значение веса у текущего пикселя
+                # берем у текущего пикселя [имя соседа][(нормализованный сосед)] = счетчик или [(нормализованный сосед)] = счетчик
                 node = self.weights[tuple(cpixel)]
                 img_out[x, y] = self.denormalize(cpixel)
                 prog.update()
@@ -143,13 +143,16 @@ class MarkChain:
 
             neighbours = []
             if self.directional:
+                # берем [имя соседа]: [(нормализованный сосед)]
                 keys = {dir: list(node[dir].keys()) for dir in node}
                 neighbours = list(self.get_neighbours_dir(x, y).items())
-                counts = {dir: np.arange(len(node[dir])) for dir in keys}
+                counts = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in keys}
+                # берем [имя соседа]: [0, 1, 2, ..., len([(нормализованный сосед)])]
                 key_idxs = {dir: np.arange(len(node[dir])) for dir in keys}
                 np.seterr(divide='ignore', invalid='ignore')
                 ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
             else:
+                # берем [(нормализованный сосед)]
                 keys = list(node.keys())
                 neighbours = self.get_neighbours(x, y)
                 counts = np.array(list(node.values()), dtype=np.float32)
