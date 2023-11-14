@@ -14,7 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = True
+        self.directional = False
 
     def normalize(self, pixel):
         # нормализуем писель (r, g, b), (делим без остатка)
@@ -175,10 +175,10 @@ class MarkChain:
                         if neighbour not in coloured:
                             col_idx = np.random.choice(key_idxs[direction], p=ps[direction])
                             img[neighbour] = keys[direction][col_idx]
-                        else:
-                            col_idx = np.random.choice(key_idxs, p=ps)
-                            if neighbour not in coloured:
-                                img[neighbour] = keys[col_idx]
+                    else:
+                        col_idx = np.random.choice(key_idxs, p=ps)
+                        if neighbour not in coloured:
+                            img[neighbour] = keys[col_idx]
                 except IndexError:
                     pass
                 except ValueError:
