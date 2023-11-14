@@ -16,9 +16,9 @@ class MarkChain:
         self.four_nb = four_nb
 
     def normalize(self, pixel):
-        return pixel
+        return pixel // self.bucket_size
 
-    def denomalize(self, pixel):
+    def denormalize(self, pixel):
         return pixel * self.bucket_size
 
     def get_neighbours(self, x, y):
