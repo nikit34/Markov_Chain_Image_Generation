@@ -138,7 +138,7 @@ class MarkChain:
                 key_idxs = np.arange(len(keys))
                 ps = counts / counts.sum()
             np.random.shuffle(neighbours)
-            for neightbour in neighbours:
+            for neighbour in neighbours:
                 try:
                     if self.directional:
                         direction = neighbour[0]
