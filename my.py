@@ -14,7 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = True
+        self.directional = False
 
     def normalize(self, pixel):
         return pixel // self.bucket_size
@@ -57,7 +57,7 @@ class MarkChain:
 
     def train(self, img):
         width, height = img.size
-        img = np.array(img)[:, :, :3]
+        img = np.array(img)
         prog = pyprind.ProgBar((width * height), width=64, stream=1)
 
         for x in range(height):
