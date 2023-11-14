@@ -14,7 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = False
+        self.directional = True
 
     def normalize(self, pixel):
         # нормализуем писель (r, g, b), (делим без остатка)
@@ -147,7 +147,7 @@ class MarkChain:
                 normalized_neighbour = {dir: list(node[dir].keys()) for dir in node}
                 # берем [имя соседа]: [веса]
                 weights_neighbour = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in normalized_neighbour}
-                # берем [имя соседа]: [0, 1, 2, ..., len([(нормализованный сосед)])]
+                # берем [имя соседа]: [0, 1, 2, ..., len([(нормализованный сосед): вес])]
                 key_idxs = {dir: np.arange(len(node[dir])) for dir in normalized_neighbour}
                 np.seterr(divide='ignore', invalid='ignore')
                 # делим вес на сумму весов
@@ -159,12 +159,13 @@ class MarkChain:
                 normalized_neighbour = list(node.keys())
                 # берем [веса]
                 weights_neighbour = np.array(list(node.values()), dtype=np.float32)
-                # берем [0, 1, 2, ..., len([(нормализованный сосед)])]
+                # берем [0, 1, 2, ..., len([(нормализованный сосед): вес])]
                 key_idxs = np.arange(len(normalized_neighbour))
                 # делим вес на сумму весов
                 ps = weights_neighbour / weights_neighbour.sum()
 
                 neighbours = self.get_neighbours(x, y)
+
             # перемешиваем соседей
             np.random.shuffle(neighbours)
             for neighbour in neighbours:
