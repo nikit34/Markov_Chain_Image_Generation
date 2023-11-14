@@ -145,19 +145,27 @@ class MarkChain:
             if self.directional:
                 # берем [имя соседа]: [(нормализованный сосед)]
                 keys = {dir: list(node[dir].keys()) for dir in node}
-                neighbours = list(self.get_neighbours_dir(x, y).items())
+                # берем [имя соседа]: [веса]
                 counts = {dir: np.array(list(node[dir].values()), dtype=np.float32) for dir in keys}
                 # берем [имя соседа]: [0, 1, 2, ..., len([(нормализованный сосед)])]
                 key_idxs = {dir: np.arange(len(node[dir])) for dir in keys}
                 np.seterr(divide='ignore', invalid='ignore')
+                # делим вес на сумму весов
                 ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
+
+                neighbours = list(self.get_neighbours_dir(x, y).items())
             else:
                 # берем [(нормализованный сосед)]
                 keys = list(node.keys())
-                neighbours = self.get_neighbours(x, y)
+                # берем [веса]
                 counts = np.array(list(node.values()), dtype=np.float32)
+                # берем [0, 1, 2, ..., len([(нормализованный сосед)])]
                 key_idxs = np.arange(len(keys))
+                # делим вес на сумму весов
                 ps = counts / counts.sum()
+
+                neighbours = self.get_neighbours(x, y)
+            # перемешиваем соседей
             np.random.shuffle(neighbours)
             for neighbour in neighbours:
                 try:
