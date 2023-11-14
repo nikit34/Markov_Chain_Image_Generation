@@ -133,7 +133,7 @@ class MarkChain:
                 ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
             else:
                 keys = list(node.keys())
-                heighbours = self.get_neighbours(x, y)
+                neighbours = self.get_neighbours(x, y)
                 counts = np.array(list(node.values()), dtype=np.float32)
                 key_idxs = np.arange(len(keys))
                 ps = counts / counts.sum()
