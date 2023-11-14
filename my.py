@@ -14,7 +14,7 @@ class MarkChain:
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = True
+        self.directional = False
 
     def normalize(self, pixel):
         # нормализуем писель (r, g, b), (делим без остатка)
@@ -135,6 +135,7 @@ class MarkChain:
                 # устанавливаем цвет текущему пикселю
                 screen.set_at((x, y), img_out[x, y])
                 if i % 128 == 0:
+                    # обновляем содержимое видео во время работы
                     pygame.display.flip()
                     writer.write(cv2.cvtColor(img_out, cv2.COLOR_RGB2BGR))
                     pass
