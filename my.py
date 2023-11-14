@@ -117,6 +117,7 @@ class MarkChain:
                 screen.set_at((x, y), img_out[x, y])
                 if i % 128 == 0:
                     pygame.display.flip()
+                    writer.write(cv2.cvtColor(img_out, cv2.COLOR_RGB2BGR))
                     pass
             except IndexError:
                 continue
@@ -130,6 +131,7 @@ class MarkChain:
                 keys = {dir: list(node[dir].keys()) for dir in node}
                 neighbours = self.get_neighbours_dir(x, y).items()
                 counts = {dir: np.arange(len(node[dir])) for dir in keys}
+                key_idxs = {dir: np.arange(len(node[dir])) for dir in keys}
                 ps = {dir: counts[dir] / counts[dir].sum() for dir in keys}
             else:
                 keys = list(node.keys())
