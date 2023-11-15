@@ -9,11 +9,11 @@ from collections import defaultdict, Counter
 
 
 class MarkChain:
-    def __init__(self, bucket_size=10, four_nb=True):
+    def __init__(self, bucket_size, four_nb, directional):
         self.weights = defaultdict(Counter)
         self.bucket_size = bucket_size
         self.four_nb = four_nb
-        self.directional = False
+        self.directional = directional
 
     def normalize(self, pixel):
         # нормализуем писель (r, g, b), (делим без остатка)
@@ -196,7 +196,7 @@ class MarkChain:
 
 
 if __name__  == "__main__":
-    chain = MarkChain(bucket_size=16, four_nb=True)
+    chain = MarkChain(bucket_size=16, four_nb=True, directional=True)
     fname = 'АВА.jpg'
     im = Image.open(fname)
     im.show()
